@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hello</title>
+</head>
+<style>
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    #container {
+        width: 100%;
+    }
+</style>
+
+<body>
+    <div id="container">
+
+    </div>
+
+    <script>
+        let resize = function () {
+            let height = window.innerHeight;
+            document.querySelector("#container").style.height = height + 'px';
+        }
+        window.onload = resize;
+        window.onresize = resize;
+    </script>
+
+    <script type="module">
+        import * as GamesLib from "../js/index.js";
+
+        let context = new GamesLib.Context({
+            container: "container"
+        });
+
+        let camera = new GamesLib.Camera({
+            position: new GamesLib.Vector3(0, 0, -10)
+        },context.canvas);
+    </script>
+</body>
+
+</html>
