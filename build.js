@@ -15,7 +15,12 @@ function buildIndex() {
     fs.writeFileSync('./js/index.js', out);
 }
 
-let htmlOut = `
+function buildIndexHtml() {
+    if (fs.existsSync('./index.html')) {
+        fs.rmSync('./index.html');
+    }
+
+    let htmlOut = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,10 +32,6 @@ let htmlOut = `
 <li>
 
 `
-function buildIndexHtml(){
-    if (fs.existsSync('./index.html')) {
-        fs.rmSync('./index.html');
-    }
 
     let files = fs.readdirSync("./html");
     for (let file of files) {
@@ -38,7 +39,7 @@ function buildIndexHtml(){
         htmlOut += `<a href="./html/${file}">${name}</a>\n`;
     }
 
-    htmlOut +=`
+    htmlOut += `
     </li>
 </body>
 </html>
