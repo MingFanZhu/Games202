@@ -6,8 +6,8 @@ function Camera(option, canvas) {
     option = defaultValue(option, {});
     this.position = defaultValue(option.position, new Vector3(0, 0, 0));
     this.up = defaultValue(option.up, new Vector3(0, 1, 0));
-    this.direction = defaultValue(option.direction, new Vector3(0, 0, -1));
-    this.right = this.direction.cross(this.up);
+    this.right = defaultValue(option.right, new Vector3(1, 0, 0));
+    this.direction = defaultValue(option.direction, new Vector3(0, 0, 1));
     this.fovy = defaultValue(option.fovy, 60 / 180 * Math.PI);
     this.canvas = canvas;
     if (canvas) {
@@ -25,7 +25,7 @@ function Camera(option, canvas) {
 
 Camera.prototype.update = function () {
     if (this.canvas) {
-        this.aspectRatio = canvas.width / canvas.height;
+        this.aspectRatio = this.canvas.width / this.canvas.height;
     }
 
     Matrix4.computeView(this.position, this.direction, this.up, this.right, this.view);
