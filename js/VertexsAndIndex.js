@@ -49,9 +49,18 @@ VertexsAndIndex.prototype.bindIndices = function(array, offset){
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, array, this.gl.STATIC_DRAW);
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+
+    let type = undefined;
+    if(array instanceof Uint16Array){
+        type = this.gl.UNSIGNED_SHORT;
+    }else if (array instanceof Uint32Array){
+        type = this.gl.UNSIGNED_INT;
+    }
+
     this.indices = {
         ebo:indicesBuffer,
         value:array,
+        type,
         offset
     };
 }
