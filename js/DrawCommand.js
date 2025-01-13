@@ -1,4 +1,7 @@
+import defaultValue from "./defaultValue.js";
 import WebGLConstants from "./WebGLConstants.js";
+import Matrix4 from "./Matrix4.js";
+import RenderState from "./RenderState.js";
 
 function DrawCommand(option) {
     option = defaultValue(option, {});
@@ -6,11 +9,13 @@ function DrawCommand(option) {
     /** @type {WebGL2RenderingContext} */
     this.gl = this.context.gl;
     this.primitiveType = defaultValue(option.primitiveType, WebGLConstants.TRIANGLES)
-    this.uniformMap = option.uniformMap;
+    this.uniformMap = defaultValue(option.uniformMap, {});
     this.vertexsAndIndex = option.vertexsAndIndex;
     this.vertexArrayObject = undefined;
     this.count = undefined;
     this.shaderProgram = option.shaderProgram;
+    this.renderState = defaultValue(option.renderState, new RenderState());
+    this.matrix = defaultValue(option.modelMatrix, new Matrix4());
     this.init();
 }
 
@@ -30,7 +35,7 @@ DrawCommand.prototype.init = function(){
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.vertexsAndIndex.indices.ebo);
     this.gl.bindVertexArray(null);
     if(this.primitiveType === WebGLConstants.TRIANGLES){
-        this.count = this.vertexsAndIndex.indices.value / 3;
+        this.count = this.vertexsAndIndex.indices.value.length;
     }
 }
 
