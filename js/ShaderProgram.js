@@ -1,3 +1,5 @@
+import defaultValue from "./defaultValue.js";
+
 function ShaderProgram(option) {
     option = defaultValue(option, {});
     this.context = option.context;
