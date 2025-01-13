@@ -18,6 +18,7 @@ function Context(option) {
     this.canvas = document.createElement('canvas');
     this.canvas.style.width = "100%";
     this.canvas.style.height = "100%";
+    this.canvas.style.display = "block";
     this.canvas.width = this.container.clientWidth;
     this.canvas.height = this.container.clientHeight;
     this.container.appendChild(this.canvas);
@@ -44,7 +45,13 @@ function init(context) {
     }
     let globalUniformValues = context.globalUniformValues;
     context.globalUniform = {
-        u_matrix: {
+        u_matrix:{
+            type: UniformType.MAT4,
+            value: function () {
+                return globalUniformValues.matrix.packArray();
+            }
+        },
+        u_view: {
             type: UniformType.MAT4,
             value: function () {
                 return globalUniformValues.camera.view.packArray();
@@ -84,6 +91,7 @@ Context.prototype.clear = function(clearCommand, fbo){
 
 Context.prototype.draw = function(drawCommand, camera, fbo){
     this.globalUniformValues.camera = camera;
+    this.globalUniformValues.matrix = drawCommand.matrix;
     this.checkRenderState(drawCommand.renderState);
 
     if(fbo){
@@ -104,7 +112,7 @@ Context.prototype.draw = function(drawCommand, camera, fbo){
             throw new Error(`未定义的uniform:${uniformName}`);
         }
     }
-    this.gl.drawElements(drawCommand.primitiveType, drawCommand.count, drawCommand.vertexsAndIndex.indices.offset);
+    this.gl.drawElements(drawCommand.primitiveType, drawCommand.count, drawCommand.vertexsAndIndex.indices.type, drawCommand.vertexsAndIndex.indices.offset);
     this.gl.bindVertexArray(null);
     this.gl.useProgram(null);
     if(fbo){
