@@ -34,14 +34,72 @@
 
     <script type="module">
         import * as GamesLib from "../js/index.js";
+        window.GamesLib = GamesLib;
 
         let context = new GamesLib.Context({
             container: "container"
         });
 
         let camera = new GamesLib.Camera({
-            position: new GamesLib.Vector3(0, 0, -10)
-        },context.canvas);
+            position: new GamesLib.Vector3(0, 0, 0)
+        }, context.canvas);
+
+        let positions = new Float32Array([
+            .5, 0, 1,
+            0, .5, 1,
+            -.5, 0, 1
+        ]);
+        let indices = new Uint16Array([0, 1, 2]);
+
+        let vertexsAndIndex = new GamesLib.VertexsAndIndex(context);
+        vertexsAndIndex.addVertex("a_position", positions, 3);
+        vertexsAndIndex.bindIndices(indices);
+
+        let vs = /*glsl*/`#version 300 es
+
+            in vec4 a_position;
+
+            uniform mat4 u_view;
+            uniform mat4 u_matrix;
+            uniform mat4 u_project;
+
+            void main(){
+                gl_Position = u_project * u_view * u_matrix * a_position;
+            }
+        `;
+
+        let fs = /*glsl*/`#version 300 es
+            precision highp float;
+
+            out vec4 outColor;
+            void main(){
+                outColor = vec4(1.0,.0,.0,1.0);
+            }
+        `;
+
+        let shaderProgram = new GamesLib.ShaderProgram({
+            context: context,
+            vertexShaderSource: vs,
+            fragmentShaderSource: fs
+        });
+
+        let drawcommand = new GamesLib.DrawCommand({
+            context: context,
+            vertexsAndIndex: vertexsAndIndex,
+            shaderProgram: shaderProgram
+        });
+
+        let render = function () {
+            context.resize();
+            camera.update();
+
+            context.clear();
+            context.draw(drawcommand, camera);
+
+            requestAnimationFrame(render);
+        }
+
+        render();
     </script>
 </body>
 
